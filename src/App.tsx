@@ -12,6 +12,8 @@ type SearchResult = {
   kind: "name" | "content";
 };
 
+type IndexReport = { files: number; elapsedMs: number };
+
 const HOME_LABEL = "Home";
 
 function SearchIcon() {
@@ -28,6 +30,9 @@ function App() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [selected, setSelected] = useState(0);
   const [searching, setSearching] = useState(false);
+  const [indexing, setIndexing] = useState(false);
+  const [indexedFiles, setIndexedFiles] = useState<number | null>(null);
+  const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const searchId = useRef(0);
 
@@ -35,6 +40,32 @@ function App() {
     invoke<string>("home_directory").then(setRoot);
     inputRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    if (!root) return;
+    let cancelled = false;
+    setIndexing(true);
+    setError("");
+    const prepare = async () => {
+      while (!cancelled) {
+        try {
+          const report = await invoke<IndexReport>("prepare_index", { root });
+          if (!cancelled) setIndexedFiles(report.files);
+          break;
+        } catch (reason) {
+          if (String(reason).includes("already running")) {
+            await new Promise((resolve) => window.setTimeout(resolve, 250));
+          } else {
+            if (!cancelled) setError(String(reason));
+            break;
+          }
+        }
+      }
+      if (!cancelled) setIndexing(false);
+    };
+    prepare();
+    return () => { cancelled = true; };
+  }, [root]);
 
   useEffect(() => {
     if (!query.trim() || !root) {
@@ -48,6 +79,7 @@ function App() {
     const request = window.setTimeout(() => {
       invoke<SearchResult[]>("search_files", { root, query, limit: 80 })
         .then((next) => { if (id === searchId.current) { setResults(next); setSelected(0); } })
+        .catch((reason) => { if (id === searchId.current) setError(String(reason)); })
         .finally(() => { if (id === searchId.current) setSearching(false); });
     }, 120);
     return () => window.clearTimeout(request);
@@ -87,7 +119,9 @@ function App() {
           <button className="scope" onClick={chooseFolder} title={root}>
             <span className="folder">⌘</span><span>Search in {rootName}</span><span className="chevron">⌄</span>
           </button>
-          {query && <span className="count">{results.length === 80 ? "80+" : results.length} results</span>}
+          <span className="count">
+            {error ? "Search unavailable" : indexing ? "Indexing files…" : query ? `${results.length === 80 ? "80+" : results.length} results` : indexedFiles !== null ? `${indexedFiles.toLocaleString()} files` : ""}
+          </span>
         </div>
 
         <div className="results" role="listbox">
@@ -95,11 +129,11 @@ function App() {
             <div className="empty">
               <span className="empty-icon"><SearchIcon /></span>
               <h1>Search your files</h1>
-              <p>Find a file by its name or anything written inside it.</p>
+              <p>{indexing ? "Building a fast local index. You can start typing now." : "Find a file by its name or anything written inside it."}</p>
             </div>
           )}
           {query && !searching && results.length === 0 && (
-            <div className="empty compact"><h1>No files found</h1><p>Try another phrase or choose a different folder.</p></div>
+            <div className="empty compact"><h1>{error ? "Search unavailable" : "No files found"}</h1><p>{error || "Try another phrase or choose a different folder."}</p></div>
           )}
           {results.map((result, index) => (
             <button key={`${result.path}:${result.line ?? 0}`} className={`result ${index === selected ? "selected" : ""}`} onMouseEnter={() => setSelected(index)} onDoubleClick={() => invoke("open_file", { path: result.path })} role="option" aria-selected={index === selected}>

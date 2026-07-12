@@ -10,7 +10,7 @@ npm install
 npm run tauri dev
 ```
 
-Type to search file names and text contents in your home folder. Click the folder name to change the search scope. Use ↑/↓ to move and Enter to open a result.
+The first launch builds a local search index in the background. After that, type to search file names and text contents instantly. Click the folder name to change the search scope. Use ↑/↓ to move and Enter to open a result.
 
 ## Build it
 

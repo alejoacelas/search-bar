@@ -3,24 +3,24 @@
 
 ## Decision
 
-Start index-free with ripgrep's filesystem traversal rules, implemented through its `ignore` Rust crate, and a small literal line matcher.
+Use embedded SQLite FTS5 for persistent ranked search, with ripgrep's filesystem traversal rules implemented through its `ignore` Rust crate for indexing.
 
-This gives the first version the useful parts of ripgrep's behavior: recursive walking, `.gitignore` support, hidden-file control, and no index to configure or keep fresh. The app searches file names first, then readable text content, stops after 80 results, and skips unreadable or binary-looking files.
+The original index-free implementation rescanned the selected folder for every query and was too slow over a home directory. FTS5 moves that work to a background refresh and makes each typed query an indexed lookup. The app boosts file-name matches, ranks content matches, caps results at 80, and skips unreadable, binary, and oversized files.
 
-The matcher is intentionally behind one Tauri command. We can replace it with an index without changing the interface.
+Typesense has better typo-tolerance defaults, but requires installing or bundling and supervising a separate server. FTS5 stays inside the app process and keeps the deployment simple. Typesense remains a candidate if typo tolerance and more sophisticated ranking become central.
 
 ## Candidates
 
 | Candidate | Best at | Costs | Verdict |
 | --- | --- | --- | --- |
-| [ripgrep](https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md) | Immediate literal or regex search over live files; respects common ignore rules and skips binary files | Re-reads files for every query; relevance and typo tolerance must be added | Pick now. It is local, dependable, and needs no indexing lifecycle. |
-| [SQLite FTS5](https://www.sqlite.org/fts5.html) | Embedded indexed search with ranking, phrase queries, and one portable database | We must build and maintain a file watcher, extraction pipeline, schema, and index recovery | Best likely upgrade when repeated searches over a large stable corpus become slow. |
+| [ripgrep](https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md) | Immediate literal or regex search over live files; respects common ignore rules and skips binary files | Re-reads files for every query; relevance and typo tolerance must be added | Useful traversal layer; too slow as the per-keystroke backend over a home folder. |
+| [SQLite FTS5](https://www.sqlite.org/fts5.html) | Embedded indexed search with ranking, phrase queries, and one portable database | We must maintain an extraction and refresh lifecycle | Pick now. Fast repeated queries without another process or service. |
 | [Tantivy](https://docs.rs/tantivy/latest/tantivy/) | High-performance Lucene-style indexing in native Rust | More index machinery and schema design than this MVP needs | Strong option if ranking and corpus size outgrow SQLite. |
-| [Meilisearch](https://www.meilisearch.com/docs/capabilities/full_text_search/overview) | Typo tolerance, prefix search, and polished relevance defaults | Adds a separate service and its operational lifecycle to a personal desktop utility | Excellent search UX, wrong deployment shape for the first version. |
+| [Typesense](https://typesense.org/docs/latest/api/search.html) | Typo tolerance, prefix search, snippets, and sophisticated relevance controls | Adds a separately installed or bundled HTTP server, API key, and process lifecycle | Strong future option; too much deployment machinery for the current local utility. |
 
 ## When to revisit
 
-Measure before replacing the backend. Move to SQLite FTS5 when a representative home-folder query cannot reliably return useful results within 200 ms, or when typo tolerance, phrase ranking, document metadata, or non-plain-text extraction becomes more valuable than zero-maintenance freshness.
+Measure before replacing the backend again. Consider Typesense or Tantivy when typo tolerance, richer ranking, or corpus size outweighs the cost of a more complex search service.
 
 The next backend should preserve the current `search_files(root, query, limit)` command contract, add cancellation for superseded queries, and index only user-approved roots.
 <!--/ai-->
