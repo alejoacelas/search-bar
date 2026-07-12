@@ -1,0 +1,24 @@
+<!--ai-->
+# Search Bar
+
+I want a clean, Raycast-style place to search my files now and add more commands later.
+
+## Run it
+
+```sh
+npm install
+npm run tauri dev
+```
+
+Type to search file names and text contents in your home folder. Click the folder name to change the search scope. Use ↑/↓ to move and Enter to open a result.
+
+## Build it
+
+```sh
+npm run tauri build
+```
+
+The React interface is in `src/`; native file search and open commands are in `src-tauri/src/lib.rs`. The UI talks to those commands through a small typed boundary so new actions can be added without coupling them to search.
+
+See [Search engine candidates](docs/search-engine-candidates.md) for the backend decision and upgrade path.
+<!--/ai-->
