@@ -4,15 +4,19 @@ import { open } from "@tauri-apps/plugin-dialog";
 import "./App.css";
 
 type SearchResult = {
-  path: string;
-  name: string;
-  parent: string;
-  line: number | null;
+  id: string;
+  source: string;
+  kind: string;
+  title: string;
+  subtitle: string;
   preview: string | null;
-  kind: "name" | "content";
+  openTarget: string | null;
+  copyText: string;
+  occurredAt: number | null;
 };
 
 type IndexReport = { files: number; elapsedMs: number };
+type SyncReport = { configured: boolean; imported: number; cursor: number; documents: number; error: string | null };
 
 const HOME_LABEL = "Home";
 
@@ -20,8 +24,14 @@ function SearchIcon() {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>;
 }
 
-function FileIcon({ kind }: { kind: SearchResult["kind"] }) {
-  return <span className={`file-icon ${kind}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h7l5 5V21H6z"/><path d="M13 2.8V8h5"/></svg></span>;
+function ResultIcon({ source }: { source: string }) {
+  if (source === "whatsapp") return <span className="file-icon whatsapp">W</span>;
+  return <span className="file-icon file"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.8h7l5 5V21H6z"/><path d="M13 2.8V8h5"/></svg></span>;
+}
+
+function resultContext(result: SearchResult) {
+  const date = result.occurredAt ? new Date(result.occurredAt * 1000).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "";
+  return [result.subtitle, date].filter(Boolean).join(" · ");
 }
 
 function App() {
@@ -33,6 +43,7 @@ function App() {
   const [indexing, setIndexing] = useState(false);
   const [indexedFiles, setIndexedFiles] = useState<number | null>(null);
   const [indexRevision, setIndexRevision] = useState(0);
+  const [collector, setCollector] = useState<SyncReport | null>(null);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const searchId = useRef(0);
@@ -72,6 +83,25 @@ function App() {
   }, [root]);
 
   useEffect(() => {
+    let cancelled = false;
+    const sync = () => invoke<SyncReport>("sync_collector")
+      .then((report) => {
+        if (!cancelled) {
+          setCollector(report);
+          if (report.imported) setIndexRevision((revision) => revision + 1);
+        }
+      })
+      .catch((reason) => {
+        if (!cancelled && !String(reason).includes("already running")) {
+          setCollector((current) => current ? { ...current, error: String(reason) } : null);
+        }
+      });
+    sync();
+    const timer = window.setInterval(sync, 10_000);
+    return () => { cancelled = true; window.clearInterval(timer); };
+  }, []);
+
+  useEffect(() => {
     if (!query.trim() || !root) {
       searchId.current += 1;
       setResults([]);
@@ -91,7 +121,7 @@ function App() {
 
   const openSelected = useCallback(() => {
     const result = results[selected];
-    if (result) invoke("open_file", { path: result.path });
+    if (result?.openTarget) invoke("open_result", { target: result.openTarget });
   }, [results, selected]);
 
   const chooseFolder = async () => {
@@ -115,7 +145,7 @@ function App() {
       <section className="command-bar" aria-label="File search">
         <header className="search-row">
           <SearchIcon />
-          <input ref={inputRef} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={onKeyDown} placeholder="Search files…" aria-label="Search files" spellCheck={false} />
+          <input ref={inputRef} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={onKeyDown} placeholder="Search everything…" aria-label="Search" spellCheck={false} />
           {searching && <span className="spinner" aria-label="Searching" />}
         </header>
 
@@ -124,7 +154,7 @@ function App() {
             <span className="folder">⌘</span><span>Search in {rootName}</span><span className="chevron">⌄</span>
           </button>
           <span className="count">
-            {error ? "Search unavailable" : indexing ? "Indexing files…" : query ? `${results.length === 80 ? "80+" : results.length} results` : indexedFiles !== null ? `${indexedFiles.toLocaleString()} files` : ""}
+            {error ? "Search unavailable" : collector?.error ? "Collector offline · local results available" : indexing ? "Indexing files…" : query ? `${results.length === 80 ? "80+" : results.length} results` : indexedFiles !== null ? `${indexedFiles.toLocaleString()} files${collector?.configured ? ` · ${collector.documents.toLocaleString()} connected items` : ""}` : ""}
           </span>
         </div>
 
@@ -132,21 +162,21 @@ function App() {
           {!query && (
             <div className="empty">
               <span className="empty-icon"><SearchIcon /></span>
-              <h1>Search your files</h1>
-              <p>{indexing ? "Building a fast local index. You can start typing now." : "Find a file by its name or anything written inside it."}</p>
+              <h1>Search everything</h1>
+              <p>{indexing ? "Building a fast local index. You can start typing now." : collector?.configured ? "Find files and connected messages without waiting for the network." : "Find a file by its name or anything written inside it."}</p>
             </div>
           )}
           {query && !searching && results.length === 0 && (
             <div className="empty compact"><h1>{error ? "Search unavailable" : indexing ? "Indexing files…" : "No files found"}</h1><p>{error || (indexing ? "Results will appear as soon as the local index is ready." : "Try another phrase or choose a different folder.")}</p></div>
           )}
           {results.map((result, index) => (
-            <button key={`${result.path}:${result.line ?? 0}`} className={`result ${index === selected ? "selected" : ""}`} onMouseEnter={() => setSelected(index)} onDoubleClick={() => invoke("open_file", { path: result.path })} role="option" aria-selected={index === selected}>
-              <FileIcon kind={result.kind} />
+            <button key={result.id} className={`result ${index === selected ? "selected" : ""}`} onMouseEnter={() => setSelected(index)} onDoubleClick={() => result.openTarget && invoke("open_result", { target: result.openTarget })} role="option" aria-selected={index === selected}>
+              <ResultIcon source={result.source} />
               <span className="result-copy">
-                <span className="result-title">{result.name}{result.line ? <span className="line">:{result.line}</span> : null}</span>
-                <span className="result-meta">{result.preview || result.parent}</span>
+                <span className="result-title">{result.title}</span>
+                <span className="result-meta">{result.preview || resultContext(result)}</span>
               </span>
-              <span className="path">{result.parent}</span>
+              <span className="path">{result.source === "file" ? result.subtitle : resultContext(result)}</span>
             </button>
           ))}
         </div>

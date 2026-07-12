@@ -24,4 +24,6 @@ The React interface is in `src/`; native file search and open commands are in `s
 
 See [How search works](docs/how-search-works.md) for matching, ranking, limitations, and comparisons. See [Search engine candidates](docs/search-engine-candidates.md) for the backend decision and upgrade path.
 See [Universal search](docs/universal-search.md) for the plan to add email, repositories, messages, native actions, and optional multi-device sync.
+
+The first connected-source slice can collect WhatsApp on this Mac now and move unchanged to an always-on Mac later. See [Collector setup](docs/collector-setup.md) and [Connector coverage](docs/connector-coverage.md).
 <!--/ai-->
