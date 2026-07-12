@@ -32,6 +32,7 @@ function App() {
   const [searching, setSearching] = useState(false);
   const [indexing, setIndexing] = useState(false);
   const [indexedFiles, setIndexedFiles] = useState<number | null>(null);
+  const [indexRevision, setIndexRevision] = useState(0);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const searchId = useRef(0);
@@ -50,7 +51,10 @@ function App() {
       while (!cancelled) {
         try {
           const report = await invoke<IndexReport>("prepare_index", { root });
-          if (!cancelled) setIndexedFiles(report.files);
+          if (!cancelled) {
+            setIndexedFiles(report.files);
+            setIndexRevision((revision) => revision + 1);
+          }
           break;
         } catch (reason) {
           if (String(reason).includes("already running")) {
@@ -83,7 +87,7 @@ function App() {
         .finally(() => { if (id === searchId.current) setSearching(false); });
     }, 120);
     return () => window.clearTimeout(request);
-  }, [query, root]);
+  }, [query, root, indexRevision]);
 
   const openSelected = useCallback(() => {
     const result = results[selected];
@@ -133,7 +137,7 @@ function App() {
             </div>
           )}
           {query && !searching && results.length === 0 && (
-            <div className="empty compact"><h1>{error ? "Search unavailable" : "No files found"}</h1><p>{error || "Try another phrase or choose a different folder."}</p></div>
+            <div className="empty compact"><h1>{error ? "Search unavailable" : indexing ? "Indexing files…" : "No files found"}</h1><p>{error || (indexing ? "Results will appear as soon as the local index is ready." : "Try another phrase or choose a different folder.")}</p></div>
           )}
           {results.map((result, index) => (
             <button key={`${result.path}:${result.line ?? 0}`} className={`result ${index === selected ? "selected" : ""}`} onMouseEnter={() => setSelected(index)} onDoubleClick={() => invoke("open_file", { path: result.path })} role="option" aria-selected={index === selected}>
