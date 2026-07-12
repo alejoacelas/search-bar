@@ -20,5 +20,5 @@ npm run tauri build
 
 The React interface is in `src/`; native file search and open commands are in `src-tauri/src/lib.rs`. The UI talks to those commands through a small typed boundary so new actions can be added without coupling them to search.
 
-See [Search engine candidates](docs/search-engine-candidates.md) for the backend decision and upgrade path.
+See [How search works](docs/how-search-works.md) for matching, ranking, limitations, and comparisons. See [Search engine candidates](docs/search-engine-candidates.md) for the backend decision and upgrade path.
 <!--/ai-->
