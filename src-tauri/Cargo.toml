@@ -20,6 +20,7 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 tauri = { version = "2", features = ["macos-private-api"] }
 tauri-plugin-dialog = "2"
+tauri-plugin-global-shortcut = "2"
 dirs = "6"
 ignore = "0.4"
 open = "5"

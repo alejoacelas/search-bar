@@ -8,6 +8,8 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
     time::Instant,
 };
+use tauri::Manager;
+use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 
 const MAX_FILE_BYTES: u64 = 2 * 1024 * 1024;
 const TEXT_EXTENSIONS: &[&str] = &[
@@ -249,7 +251,30 @@ pub fn run() {
             database,
             indexing: AtomicBool::new(false),
         })
+        .plugin(
+            tauri_plugin_global_shortcut::Builder::new()
+                .with_handler(|app, _shortcut, event| {
+                    if event.state() != ShortcutState::Pressed {
+                        return;
+                    }
+                    let Some(window) = app.get_webview_window("main") else {
+                        return;
+                    };
+                    if window.is_visible().unwrap_or(false) && window.is_focused().unwrap_or(false)
+                    {
+                        let _ = window.hide();
+                    } else {
+                        let _ = window.show();
+                        let _ = window.set_focus();
+                    }
+                })
+                .build(),
+        )
         .plugin(tauri_plugin_dialog::init())
+        .setup(|app| {
+            app.global_shortcut().register("CmdOrCtrl+Space")?;
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             home_directory,
             prepare_index,
