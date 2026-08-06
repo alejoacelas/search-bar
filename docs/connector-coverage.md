@@ -1,4 +1,8 @@
-<!--ai-->
+---
+human_edit_tracking:
+  enabled: true
+  history: []
+---
 # Connector coverage
 
 All sources should emit the collector's normalized document and change-feed format. The Mini improves ingestion uptime. It does not expand what a provider permits an account to retrieve.
@@ -31,4 +35,3 @@ All sources should emit the collector's normalized document and change-feed form
 - [Google Keep API overview and enterprise-administration scope](https://developers.google.com/workspace/keep/api/guides)
 - [Apple macOS automation scripting](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
 - [Signal backups and linked-device history constraints](https://support.signal.org/hc/en-us/articles/10074659364122-Backups-and-Device-Transfers-on-Signal)
-<!--/ai-->

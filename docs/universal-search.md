@@ -1,4 +1,8 @@
-<!--ai-->
+---
+human_edit_tracking:
+  enabled: true
+  history: []
+---
 # Universal search
 
 ## Decision
@@ -127,4 +131,3 @@ The first vertical slice after the launcher should search local files plus one G
 - [Gmail message listing and search](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/list)
 - [GitHub Git trees API and limits](https://docs.github.com/en/rest/git/trees)
 - [Signal backups and device transfers](https://support.signal.org/hc/en-us/articles/10074659364122-Backups-and-Device-Transfers-on-Signal)
-<!--/ai-->

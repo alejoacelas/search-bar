@@ -1,4 +1,8 @@
-<!--ai-->
+---
+human_edit_tracking:
+  enabled: true
+  history: []
+---
 # How search works
 
 Search Bar builds private SQLite FTS5 indexes on this computer, then searches them as I type. It does not rescan every file, contact the collector, or send contents anywhere for a query.
@@ -84,4 +88,3 @@ IntelliSense is not a stronger version of this search. It is a different categor
 - Ranking has not yet been tuned against a real set of searches and clicked results.
 
 The next useful ranking improvement is likely a small local history of opened results. It could boost files I open frequently or recently without changing the search backend. If misspellings become the main failure mode, Typesense or a lightweight fuzzy fallback over file names would be the next comparison to test.
-<!--/ai-->

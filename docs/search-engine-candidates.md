@@ -1,4 +1,8 @@
-<!--ai-->
+---
+human_edit_tracking:
+  enabled: true
+  history: []
+---
 # Search engine candidates
 
 ## Decision
@@ -23,4 +27,3 @@ Typesense has better typo-tolerance defaults, but requires installing or bundlin
 Measure before replacing the backend again. Consider Typesense or Tantivy when typo tolerance, richer ranking, or corpus size outweighs the cost of a more complex search service.
 
 The next backend should preserve the current `search_files(root, query, limit)` command contract, add cancellation for superseded queries, and index only user-approved roots.
-<!--/ai-->

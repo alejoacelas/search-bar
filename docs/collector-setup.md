@@ -1,4 +1,8 @@
-<!--ai-->
+---
+human_edit_tracking:
+  enabled: true
+  history: []
+---
 # Collector setup
 
 Search Bar searches a local replica. The collector runs continuously, converts each source into one document format, and exposes only an authenticated incremental feed. Moving it from this Mac to a Mac Mini changes its URL, not the search or source schema.
@@ -92,4 +96,3 @@ Tailscale supplies transport encryption and device authentication. The bearer to
 - Source health records that distinguish logged out, syncing, caught up, and possible history gaps.
 - Automatic bridge updates after compatibility testing. Updates must remain pinned; following upstream `main` would let an unaudited protocol client read correspondence.
 - Deletion, edit, reaction, disappearing-message, and unsupported-message events. The reference bridge does not preserve these faithfully.
-<!--/ai-->
