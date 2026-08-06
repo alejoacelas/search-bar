@@ -1,8 +1,3 @@
----
-human_edit_tracking:
-  enabled: true
-  history: []
----
 # Connector coverage
 
 All sources should emit the collector's normalized document and change-feed format. The Mini improves ingestion uptime. It does not expand what a provider permits an account to retrieve.

@@ -1,8 +1,3 @@
----
-human_edit_tracking:
-  enabled: true
-  history: []
----
 # How search works
 
 Search Bar builds private SQLite FTS5 indexes on this computer, then searches them as I type. It does not rescan every file, contact the collector, or send contents anywhere for a query.

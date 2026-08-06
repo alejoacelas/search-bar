@@ -1,8 +1,3 @@
----
-human_edit_tracking:
-  enabled: true
-  history: []
----
 # Collector setup
 
 Search Bar searches a local replica. The collector runs continuously, converts each source into one document format, and exposes only an authenticated incremental feed. Moving it from this Mac to a Mac Mini changes its URL, not the search or source schema.
