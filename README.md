@@ -1,8 +1,3 @@
----
-human_edit_tracking:
-  enabled: true
-  history: []
----
 # Search Bar
 
 I want a clean, Raycast-style place to search my files now and add more commands later.
