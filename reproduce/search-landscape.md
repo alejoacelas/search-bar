@@ -88,8 +88,9 @@ An account stayed in the reusable list when public work showed project ownership
 - Fork status was checked before interpreting commit or contributor history.
 - GitHub license metadata was checked against README license statements where relevant. Screenpipe's custom commercial license and Mango Finder's missing detected license are called out explicitly.
 - The local project's existing docs and implementation boundary were reviewed before recommending replacement or relocation.
-- All 203 account profiles and their anchor repositories resolved through the GitHub API.
-- The CSV has 203 unique case-insensitive logins across eight categories; no bots or organizations remain.
-- The Markdown contains the same 203 unique profile links as the CSV.
+- Every GitHub repository linked from the research documents resolved after the expanded source, extraction, retrieval, and launcher scan.
+- All 207 account profiles and their anchor repositories resolved through the GitHub API.
+- The CSV has 207 unique case-insensitive logins across eight categories; no bots or organizations remain.
+- The Markdown contains the same 207 unique profile links as the CSV.
 
 Refresh the counts and activity dates before making a dependency decision; they are snapshots, not live badges.

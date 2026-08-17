@@ -49,6 +49,7 @@ These people are closest to the search-bar problem: indexing personal data, retr
 | [pashpashpash](https://github.com/pashpashpash) | Former Cline AI lead and creator of [vault-ai](https://github.com/pashpashpash/vault-ai), an early personal knowledge retrieval app. |
 | [jlongster](https://github.com/jlongster) | Built [absurd-sql](https://github.com/jlongster/absurd-sql) and [rocket-bar](https://github.com/jlongster/rocket-bar), an older live deep-search experiment. |
 | [MaxGhenis](https://github.com/MaxGhenis) | Leads [OpenMessage](https://github.com/MaxGhenis/openmessage), a local Google Messages, WhatsApp, and Signal inbox. |
+| [RhetTbull](https://github.com/RhetTbull) | Builds [osxphotos](https://github.com/RhetTbull/osxphotos), [macnotesapp](https://github.com/RhetTbull/macnotesapp), Apple Notes parsing, Spotlight metadata tools, and macOS OCR utilities. |
 | [asciimoo](https://github.com/asciimoo) | Created Searx and leads [Hister](https://github.com/asciimoo/hister), a private index of visited pages and local files. |
 | [hanxiao](https://github.com/hanxiao) | Leads [Omni](https://github.com/hanxiao/omni-macos), native multimodal file search on Apple silicon. |
 | [yichuan-w](https://github.com/yichuan-w) | Top contributor to [LEANN](https://github.com/StarTrail-org/LEANN), covering compact retrieval over files, mail, chat, and browser history. |
@@ -137,6 +138,7 @@ These people work one layer above the runtime: development methods, reusable ski
 | [john-b-yang](https://github.com/john-b-yang) | Lead contributor to [SWE-bench](https://github.com/swe-bench/SWE-bench) and contributor to SWE-agent. |
 | [closji](https://github.com/closji) | Core contributor across SWE-agent and SWE-bench. |
 | [lgrammel](https://github.com/lgrammel) | Lead contributor to Vercel's [AI SDK](https://github.com/vercel/ai). |
+| [ospfranco](https://github.com/ospfranco) | Creator and lead contributor to [Sol](https://github.com/ospfranco/sol), a native macOS launcher and command palette. |
 
 ## MCP, connectors, browser access, and ingestion
 
@@ -166,6 +168,8 @@ This network matters because unified personal search succeeds or fails on source
 | [ntohidi](https://github.com/ntohidi) | Core Crawl4AI contributor. |
 | [ctate](https://github.com/ctate) | Lead contributor to Vercel's [agent-browser](https://github.com/vercel-labs/agent-browser). |
 | [afourney](https://github.com/afourney) | Lead contributor to [MarkItDown](https://github.com/microsoft/markitdown), a useful document-normalization layer. |
+| [soywod](https://github.com/soywod) | Creator and lead contributor to [Himalaya](https://github.com/pimalaya/himalaya) and the surrounding Rust email libraries. |
+| [jpoehnelt](https://github.com/jpoehnelt) | Lead human contributor to the official [Google Workspace CLI](https://github.com/googleworkspace/cli). |
 
 ## Local inference and model enablement
 
