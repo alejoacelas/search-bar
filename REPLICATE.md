@@ -130,3 +130,12 @@ An account stayed in the reusable list when public work showed project ownership
 - The Markdown contains the same 207 unique profile links as the CSV.
 
 Refresh the counts and activity dates before making a dependency decision; they are snapshots, not live badges.
+
+## Retire construction folders
+
+Alejo wanted all `reproduce` folders under `~/best` transitioned to `REPLICATE.md`.
+
+- Consolidated the existing records and updated references for `reproduce`. Preserved scripts, data and maintained procedures in their own folders.
+- Original tracked files remain in Git at `fc65da75a78fae36b58d8d46954de30f3ef30be5`; a full local backup, including ignored files, is at `/Users/alejo/.local/state/reproduce-migration/2026-09-19-_qyg4u7a/before/tools/active/search-bar`.
+
+Agent session 01a0bb8d-6d31-76d3-ac4e-aca4c5dfce64 · Commits f01a6ef65517303e0689130853260ea2d4b99630
