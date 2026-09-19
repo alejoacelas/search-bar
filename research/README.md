@@ -18,4 +18,4 @@ The existing application already has the right boundary: collectors normalize re
 
 - [Repository survey](repositories.md) records fit, maturity, licensing, and what to reuse.
 - [AI power users](ai-power-users.md) maps 207 people across eight networks; [the CSV](ai-power-users.csv) is the reusable list.
-- [Construction record](../reproduce/search-landscape.md) preserves the seed repositories, method, queries, and checks.
+- [Construction record](../REPLICATE.md#record-search-landscape) preserves the seed repositories, method, queries, and checks.
